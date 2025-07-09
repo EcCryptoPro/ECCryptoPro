@@ -48,11 +48,14 @@ async def telegram_webhook(req: Request):
 from fastapi import FastAPI
 import threading
 import telebot
+import os
 
 app = FastAPI()
 
 # --- Bot do Telegram ---
-bot = telebot.TeleBot("SEU_TOKEN_REAL_DO_BOT")
+# Pega o token do ambiente do Render
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=["start"])
 def send_welcome(message):

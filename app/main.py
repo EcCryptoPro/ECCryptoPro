@@ -8,43 +8,6 @@ def read_root():
 
 
 
-
-
-from fastapi import FastAPI, Request
-import os
-import httpx
-
-app = FastAPI()
-
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
-
-
-
-@app.post("/webhook")
-async def telegram_webhook(req: Request):
-    body = await req.json()
-
-    message = body.get("message")
-    if not message:
-        return {"ok": True}
-
-    chat_id = message["chat"]["id"]
-    text = message.get("text", "")
-
-    # Resposta automática
-    resposta = "Recebido com sucesso! ✅"
-
-    async with httpx.AsyncClient() as client:
-        await client.post(
-            f"{TELEGRAM_API_URL}/sendMessage",
-            json={"chat_id": chat_id, "text": resposta}
-        )
-
-    return {"ok": True}
-
-
-
 from fastapi import FastAPI
 import threading
 import telebot
@@ -52,9 +15,11 @@ import os
 
 app = FastAPI()
 
-# --- Bot do Telegram ---
-# Pega o token do ambiente do Render
+# Pegar o token do ambiente
 TOKEN = os.getenv("TELEGRAM_TOKEN")
+print("TOKEN LIDO:", TOKEN)  # ⚠ ISSO AQUI É SÓ PRA TESTE — DEPOIS VAMOS REMOVER
+
+# Inicializar o bot do Telegram
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=["start"])
@@ -78,3 +43,4 @@ def check_status():
 
 
 
+    
